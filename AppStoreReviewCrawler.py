@@ -46,7 +46,7 @@ class AppStoreReviewCrawler:
             total_score TINYINT,
             review_score TINYINT,
             write_date DATE,
-            title MIDDLETEXT,
+            title MEDIUMTEXT,
             review_txt LONGTEXT
         ); 
         '''.format(self.app_name)
@@ -102,9 +102,8 @@ class AppStoreReviewCrawler:
             date = '/'.join(re.findall('[0-9]+', date))
             title = rs_i.find('h3', {
                 'class': 'we-truncate we-truncate--single-line ember-view we-customer-review__title'}).text.strip().replace("'","\\'")
-            review_txt = rs_i.find('blockquote', {
-                'class': 'we-truncate we-truncate--multi-line we-truncate--interactive we-truncate--truncated ember-view we-customer-review__body'}).find(
-                'div', {'class': 'we-clamp ember-view'}).find('p').text.replace("'","\\'")
+
+            review_txt = rs_i.find('div',{'class':'we-clamp ember-view'}).find('p').text.replace('\'','\\\'')
 
 
             sql = 'INSERT INTO {} VALUES (\'{}\',{},{},\'{}\',\'{}\',\'{}\')'.format(self.app_name, name, total_score,
